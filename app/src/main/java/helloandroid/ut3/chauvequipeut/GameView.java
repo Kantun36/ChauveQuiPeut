@@ -24,17 +24,19 @@ import java.util.List;
 import java.util.Set;
 import android.view.View;
 
+
 public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener, View.OnTouchListener {
     private final GameThread thread;
     private List<Obstacle> obstacles;
     private final Random random;
+    private Bitmap background;
+    private Bitmap scaled;
     private boolean touched;
     private float accelerationX;
     private SensorManager sensorManager;
     private Sensor accelerometer;
     private Sensor lightSensor;
     private boolean isNightTime = false;
-
     private Bitmap upArrowBitmap;
     private Bitmap downArrowBitmap;
     private Rect upArrowRect;
@@ -62,7 +64,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         touched = false;
         random = new Random();
 
-
         // Initialize accelerometer
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -83,6 +84,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         upArrowRect = new Rect(0, 0, upArrowBitmap.getWidth(), upArrowBitmap.getHeight());
         downArrowRect = new Rect(0, getHeight() - downArrowBitmap.getHeight(), downArrowBitmap.getWidth(), getHeight());
 
+        background = BitmapFactory.decodeResource(getResources(),R.drawable.cavebackground);
 
         initialRadius = chauveSouris.getTailleLongueur();
         // Initialiser le taux d'augmentation du rayon
@@ -107,6 +109,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         upArrowRect.offset(0, height - (downArrowBitmap.getHeight()*2));
         downArrowRect.offsetTo(0, height - downArrowBitmap.getHeight());
+        scaled = Bitmap.createScaledBitmap(background, background.getWidth(),getHeight() , true);
     }
 
     @Override
@@ -134,7 +137,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     public void draw(Canvas canvas) {
         super.draw(canvas);
         if (canvas != null) {
-            canvas.drawColor(Color.WHITE);
+            canvas.drawBitmap(scaled,-200,0,null);
             // Draw the obstacles
             for (Obstacle obstacle : obstacles) {
                 obstacle.draw(canvas);
