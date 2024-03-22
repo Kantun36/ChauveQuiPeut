@@ -86,11 +86,11 @@ public class EndGameActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         // Créer un objet Reservation pour stocker les détails de la réservation
-        Score reservation = new Score(score);
+        Score scoreSubmit = new Score(score);
 
         // Ajouter la réservation à la collection appropriée dans Firestore
         db.collection("score")
-                .add(reservation)
+                .add(scoreSubmit)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
