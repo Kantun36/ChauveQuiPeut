@@ -27,8 +27,9 @@ public class GameActivity extends Activity {
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        GameView mGameView = new GameView(this);
-        setContentView(mGameView);
+        // Passer le lecteur de musique à GameView
+        GameView gameView = new GameView(this, mediaPlayer);
+        setContentView(gameView);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);

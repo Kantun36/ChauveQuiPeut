@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 
+
 public class Obstacle {
     private final Paint paint;
     private final Path path;
@@ -74,10 +75,17 @@ public class Obstacle {
         return width;
     }
 
+    public Path getPath() {
+        return path;
+    }
+
+    public float getY() {
+        return y;
+    }
+
     public float getHeight() {
         return height;
     }
-
 
     public float[][] getTrianglePoints() {
         float[][] points = new float[3][2]; // Tableau 2D pour stocker les coordonnées de chaque point (x, y)

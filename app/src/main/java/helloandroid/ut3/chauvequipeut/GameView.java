@@ -1,6 +1,7 @@
 package helloandroid.ut3.chauvequipeut;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -12,6 +13,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.util.Log;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -24,10 +26,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import android.view.View;
-
+import android.media.MediaPlayer;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener, View.OnTouchListener {
     private final GameThread thread;
+    private MediaPlayer mediaPlayer;
     private List<Obstacle> obstacles;
     private final Random random;
     private Bitmap background;
@@ -58,9 +61,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private long startTimeMillis;
     private long elapsedTimeMillis;
 
+    private boolean stopped = false;
 
-    public GameView(Context context) {
+    private String time;
+
+
+    public GameView(Context context, MediaPlayer mediaPlayer) {
         super(context);
+        this.mediaPlayer = mediaPlayer;
         getHolder().addCallback(this);
         setFocusable(true);
         setOnTouchListener(this); // Set onTouchListener for handling button clicks
@@ -213,7 +221,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
 
 
-        if (canvas != null) {
+        if (canvas != null && !stopped) {
             canvas.drawBitmap(scaled,-200,0,null);
             // Draw the obstacles
             for (Obstacle obstacle : obstacles) {
@@ -241,7 +249,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             canvas.drawBitmap(upArrowBitmap, null, upArrowRect, null);
             canvas.drawBitmap(downArrowBitmap, null, downArrowRect, null);
 
-            Log.d("NIGHT" , "" + isNightTime);
             // Dessiner le cercle supplémentaire lorsque c'est la nuit
             if (isNightTime) {
                 Paint circlePaint = new Paint();
@@ -272,6 +279,46 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             chauveSouris.draw(canvas); // Dessiner la chauve-souris
             String timeString = String.format("%02d:%02d",  minutes, seconds);
             canvas.drawText(timeString, getWidth()/2-70, 100, textPaint);
+            time = timeString;
+        }
+
+        handleCollisions();
+    }
+
+    private boolean isCollision(ChauveSouris bat, Obstacle obstacle) {
+        // Calculate bounding box for bat
+        Rect batRect = new Rect(bat.getX(), bat.getY(), bat.getX() + bat.getTailleLargeur(), bat.getY() + bat.getTailleLongueur());
+
+        // Calculate bounding box for obstacle
+        Rect obstacleRect = new Rect((int) obstacle.getX(), (int) obstacle.getY(), (int) (obstacle.getX() + obstacle.getWidth()), (int) (obstacle.getY() + obstacle.getHeight()));
+
+        // Check if the bounding boxes intersect
+        return batRect.intersect(obstacleRect);
+    }
+
+    private boolean collisionOccurred = false; // Ajoutez un drapeau de collision
+
+    private void handleCollisions() {
+        if (collisionOccurred) {
+            return; // Si une collision s'est déjà produite, sortir de la méthode
+        }
+
+        for (Obstacle obstacle : obstacles) {
+            if (isCollision(chauveSouris, obstacle)) {
+                // Collision détectée, arrêter le jeu et lancer EndGameActivity
+                collisionOccurred = true; // Mettre à jour le drapeau de collision
+
+                mediaPlayer.stop();
+                mediaPlayer.release();
+                mediaPlayer = null;
+                
+                Intent intent = new Intent(getContext(), EndGameActivity.class);
+                intent.putExtra("score", time); // Passer le score
+                getContext().startActivity(intent);
+
+                // Si vous souhaitez arrêter de vérifier les autres obstacles après la première collision
+                break;
+            }
         }
     }
 
