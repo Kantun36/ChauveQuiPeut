@@ -291,6 +291,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 // Dessiner le cercle concentrique autour de la chauve-souris
                 canvas.drawCircle(centerX, centerY, currentRadius, circlePaint);
 
+                for (Obstacle obstacle : obstacles) {
+                    if (obstacle.collidesWithCircle(centerX, centerY, currentRadius)) {
+                        obstacle.setStrokeColor(Color.YELLOW); // Changer la couleur de l'obstacle en jaune
+                    }
+                }
+
                 // Augmenter le rayon actuel pour la prochaine mise à jour
                 currentRadius *= growthRate;
 
