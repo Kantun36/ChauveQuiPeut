@@ -24,10 +24,6 @@ import java.util.List;
 import java.util.Set;
 import android.view.View;
 
-import helloandroid.ut3.chauvequipeut.util.Point;
-import helloandroid.ut3.chauvequipeut.util.Rectangle;
-import helloandroid.ut3.chauvequipeut.util.Triangle;
-
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener, View.OnTouchListener {
     private final GameThread thread;
