@@ -86,4 +86,9 @@ public class ChauveSouris {
     public void setVelocity(double velocity) {
         this.velocity = velocity;
     }
+
+    public int getTailleLongueur() {
+        return TailleLongueur;
+    }
+
 }

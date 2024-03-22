@@ -8,11 +8,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener {
     private final GameThread thread;
@@ -79,7 +77,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     public void update() {
         // Update ChauveSouris horizontal position based on accelerometer data
-        chauveSouris.setX((int) (chauveSouris.getX() + accelerationX));
+        chauveSouris.setX((int) (chauveSouris.getX() + (-accelerationX)));
         // Move the ChauveSouris object vertically based on touch input
         // No need to do anything here as it's handled in onTouchEvent method
     }
