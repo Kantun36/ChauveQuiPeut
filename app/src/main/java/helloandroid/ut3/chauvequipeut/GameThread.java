@@ -3,7 +3,7 @@ package helloandroid.ut3.chauvequipeut;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
-class GameThread extends Thread {
+public class GameThread extends Thread {
     private final SurfaceHolder surfaceHolder;
     private final GameView gameView;
     private boolean running;

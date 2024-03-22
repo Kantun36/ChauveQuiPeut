@@ -3,15 +3,21 @@ package helloandroid.ut3.chauvequipeut;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.util.DisplayMetrics;
 import android.view.MotionEvent;
+
+import java.util.HashSet;
+import java.util.Random;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private final GameThread thread;
-    private ChauveSouris chauveSouris;
+    private List<Obstacle> obstacles;
+    private final Random random;
+
     private boolean touched;
 
     public GameView(Context context) {
@@ -19,17 +25,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         getHolder().addCallback(this);
         setFocusable(true);
         thread = new GameThread(getHolder(), this);
-
-        // Initialize ChauveSouris object
-        chauveSouris = new ChauveSouris(context);
-
+        obstacles = new ArrayList<>();
         touched = false;
+        random = new Random();
+
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         thread.setRunning(true);
         thread.start();
+        // Generate initial obstacles
+        generateInitialObstacles();
     }
 
     @Override
@@ -59,8 +66,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void update() {
-        // Move the ChauveSouris object
-        chauveSouris.update();
+        // Remove obstacles if needed
+        // For simplicity, we won't remove obstacles in this example
     }
 
     @Override
@@ -68,7 +75,70 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
         if (canvas != null) {
             canvas.drawColor(Color.WHITE);
-            chauveSouris.draw(canvas); // Draw the ChauveSouris object
+            // Draw the obstacles
+            for (Obstacle obstacle : obstacles) {
+                obstacle.draw(canvas);
+            }
         }
     }
+
+    private void generateInitialObstacles() {
+        int obstacleCount = 4; // Nombre d'obstacles à générer initialement
+        int obstacleWidth = getWidth() / 4; // Largeur de chaque obstacle
+
+        // Facteur de variation pour la hauteur des obstacles
+        float heightFactor = 0.5f; // Modifier selon vos préférences
+
+        // Variables pour suivre les positions x précédemment générées
+        Set<Float> topXPositions = new HashSet<>();
+        Set<Float> bottomXPositions = new HashSet<>();
+
+        for (int i = 0; i < obstacleCount; i++) {
+            // Générer une hauteur d'obstacle aléatoire
+            int obstacleHeight;
+
+            // Générer une position x aléatoire
+            float randomX = random.nextInt(getWidth() - obstacleWidth);
+
+            // Déterminer si obstacle en haut ou en bas
+            boolean top = (i % 2 == 0);
+
+            // Vérifier si la position x générée se chevauche avec les obstacles précédents dans la même rangée
+            if (top && !isOverlapping(topXPositions, randomX, obstacleWidth)) {
+                // Si le triangle du haut et du bas se chevauchent en termes de position x, réduire la hauteur
+                if (bottomXPositions.contains(randomX)) {
+                    obstacleHeight = (int) (getHeight() * heightFactor * random.nextFloat() * 0.5); // Hauteur réduite
+                } else {
+                    obstacleHeight = (int) (getHeight() * heightFactor * random.nextFloat());
+                }
+                obstacles.add(new Obstacle(getContext(), randomX, 0, obstacleWidth, obstacleHeight, true));
+                topXPositions.add(randomX);
+            } else if (!top && !isOverlapping(bottomXPositions, randomX, obstacleWidth)) {
+                // Si le triangle du haut et du bas se chevauchent en termes de position x, réduire la hauteur
+                if (topXPositions.contains(randomX)) {
+                    obstacleHeight = (int) (getHeight() * heightFactor * random.nextFloat() * 0.5); // Hauteur réduite
+                } else {
+                    obstacleHeight = (int) (getHeight() * heightFactor * random.nextFloat());
+                }
+                obstacles.add(new Obstacle(getContext(), randomX, getHeight() - obstacleHeight, obstacleWidth, obstacleHeight, false));
+                bottomXPositions.add(randomX);
+            }
+        }
+    }
+
+
+
+    // Helper method to check if a new obstacle overlaps with previous obstacles
+    private boolean isOverlapping(Set<Float> positions, float newX, float obstacleWidth) {
+        for (float position : positions) {
+            // Check if the new obstacle's x position is within the range of previous obstacles
+            if (Math.abs(newX - position) < obstacleWidth) {
+                return true; // Overlapping
+            }
+        }
+        return false; // Not overlapping
+    }
+
+
 }
+
