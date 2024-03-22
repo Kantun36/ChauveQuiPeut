@@ -11,12 +11,19 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import android.media.MediaPlayer;
+import android.os.Bundle;
 
 public class GameActivity extends Activity {
 
+    private MediaPlayer mediaPlayer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.batman);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -25,6 +32,15 @@ public class GameActivity extends Activity {
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
 }
 
