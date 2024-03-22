@@ -160,7 +160,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         chauveSouris.setX((int) newX);
         // Déplacer les obstacles vers la gauche
         for (Obstacle obstacle : obstacles) {
-            obstacle.moveLeft(5); // Déplacer de 5 pixels vers la gauche (ajuster selon votre besoin)
+            obstacle.moveLeft(12);
         }
 
         // Vérifier si un nouveau obstacle doit être généré
@@ -230,16 +230,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 obstacle.draw(canvas);
                 int[][] bat = chauveSouris.getCornerCoordinates();
                 float[][] ob = obstacle.getTrianglePoints();
-                if(intersects(new PointF(bat[0][0],bat[0][1]), new PointF(bat[1][0],bat[1][1]),
+                if(intersects(new PointF(bat[0][0],bat[0][1]), new PointF(bat[1][0],bat[1][1]), // verif collision haut bat avec gauche obstacle
                         new PointF(ob[0][0],ob[0][1]), new PointF(ob[2][0],ob[2][1])) ||
 
-                        intersects(new PointF(bat[1][0],bat[1][1]), new PointF(bat[3][0],bat[3][1]),
+                        intersects(new PointF(bat[1][0],bat[1][1]), new PointF(bat[3][0],bat[3][1]),// verif collision droite bat avec gauche obstacle
                                 new PointF(ob[0][0],ob[0][1]), new PointF(ob[2][0],ob[2][1])) ||
 
-                        intersects(new PointF(bat[0][0],bat[0][1]), new PointF(bat[2][0],bat[2][1]),
+                        intersects(new PointF(bat[0][0],bat[0][1]), new PointF(bat[2][0],bat[2][1]),// verif collision gauche bat avec droite obstacle
                                 new PointF(ob[1][0],ob[1][1]), new PointF(ob[2][0],ob[2][1])) ||
 
-                        intersects(new PointF(bat[2][0],bat[2][1]), new PointF(bat[3][0],bat[3][1]),
+                        intersects(new PointF(bat[2][0],bat[2][1]), new PointF(bat[3][0],bat[3][1]),// verif collision bas bat avec droite obstacle
                                 new PointF(ob[1][0],ob[1][1]), new PointF(ob[2][0],ob[2][1]))
                 ){
                     mediaPlayer.stop();
@@ -468,7 +468,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     startMoveTimer(false);
                 }
             }
-        }, 20);
+        }, 10);
     }
 
     private void stopMoveTimer() {
