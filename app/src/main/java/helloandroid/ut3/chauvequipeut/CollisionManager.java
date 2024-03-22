@@ -6,16 +6,16 @@ public class CollisionManager {
 
 
     public static boolean checkForCollision(int[][] bat, float[][] ob) {
-         boolean toReturn = intersects(new PointF(bat[0][0],bat[0][1]), new PointF(bat[1][0],bat[1][1]),
+        boolean toReturn = intersects(new PointF(bat[0][0],bat[0][1]), new PointF(bat[1][0],bat[1][1]), // verif collision haut bat avec gauche obstacle
                 new PointF(ob[0][0],ob[0][1]), new PointF(ob[2][0],ob[2][1])) ||
 
-                intersects(new PointF(bat[1][0],bat[1][1]), new PointF(bat[3][0],bat[3][1]),
+                intersects(new PointF(bat[1][0],bat[1][1]), new PointF(bat[3][0],bat[3][1]),// verif collision droite bat avec gauche obstacle
                         new PointF(ob[0][0],ob[0][1]), new PointF(ob[2][0],ob[2][1])) ||
 
-                intersects(new PointF(bat[0][0],bat[0][1]), new PointF(bat[2][0],bat[2][1]),
+                intersects(new PointF(bat[0][0],bat[0][1]), new PointF(bat[2][0],bat[2][1]),// verif collision gauche bat avec droite obstacle
                         new PointF(ob[1][0],ob[1][1]), new PointF(ob[2][0],ob[2][1])) ||
 
-                intersects(new PointF(bat[2][0],bat[2][1]), new PointF(bat[3][0],bat[3][1]),
+                intersects(new PointF(bat[2][0],bat[2][1]), new PointF(bat[3][0],bat[3][1]),// verif collision bas bat avec droite obstacle
                         new PointF(ob[1][0],ob[1][1]), new PointF(ob[2][0],ob[2][1]));
 
         return toReturn;

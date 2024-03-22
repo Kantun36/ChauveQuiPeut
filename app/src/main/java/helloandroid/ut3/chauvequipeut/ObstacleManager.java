@@ -73,7 +73,7 @@ public class ObstacleManager {
 
     public void updateObstacle() {
         for (Obstacle obstacle : obstacles) {
-            obstacle.moveLeft(5);
+            obstacle.moveLeft(12);
         }
         if (obstacles.get(obstacles.size() - 1).getX() <= viewWidth * 0.75) {
             generateNewObstacle();
