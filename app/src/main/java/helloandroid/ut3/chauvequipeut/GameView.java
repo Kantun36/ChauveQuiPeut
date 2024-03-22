@@ -41,6 +41,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private MediaPlayerManager mediaPlayerManager;
 
     private VibrationManager vibrationManager;
+
+    private  NightTimeManager nightTimeManager;
     private final GameThread thread;
     private final Random random;
     private Bitmap background;
@@ -49,29 +51,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private SensorManager sensorManager;
     private Sensor accelerometer;
     private Sensor lightSensor;
-    private boolean isNightTime = false;
     private Bitmap upArrowBitmap;
     private Bitmap downArrowBitmap;
     private Rect upArrowRect;
     private Rect downArrowRect;
-    private static final float ARROW_SCALE_FACTOR = 5f;
     private Handler moveHandler = new Handler();
     private boolean moveUpPressed = false;
     private boolean moveDownPressed = false;
     private ChauveSouris chauveSouris;
-    // Ajouter un membre pour le rayon initial du cercle
-    private float initialRadius;
-    // Ajouter un membre pour le taux d'augmentation du rayon
-    private float growthRate;
-    // Ajouter un membre pour le rayon actuel du cercle
-    private float currentRadius;
-
     private Paint textPaint;
     private long startTimeMillis;
     private long elapsedTimeMillis;
-
     private boolean stopped = false;
-
     private String time;
 
 
@@ -100,7 +91,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         chauveSouris = new ChauveSouris(context);
 
         accelerationX = 0.0f;
-        isNightTime = false;
+        nightTimeManager.setNightTime(false);
 
         // Charger les images des flèches
         upArrowBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.uparrow);
@@ -117,11 +108,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
         background = BitmapFactory.decodeResource(getResources(),R.drawable.cavebackground);
 
-        initialRadius = chauveSouris.getTailleLongueur();
-        // Initialiser le taux d'augmentation du rayon
-        growthRate = 1.1f;
-        // Initialiser le rayon actuel
-        currentRadius = initialRadius;
+        nightTimeManager.setInitialRadius(chauveSouris.getTailleLongueur());
+        nightTimeManager.setGrowthRate(1.1f);
+        nightTimeManager.setCurrentRadius(nightTimeManager.getInitialRadius());
     }
 
     @Override
@@ -213,37 +202,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             canvas.drawBitmap(downArrowBitmap, null, downArrowRect, null);
 
             // Dessiner le cercle supplémentaire lorsque c'est la nuit
-            if (isNightTime) {
-                Paint circlePaint = new Paint();
-                circlePaint.setColor(Color.YELLOW); // Couleur du cercle
-                circlePaint.setStyle(Paint.Style.STROKE);
-                circlePaint.setStrokeWidth(5);
-
-                // Calculer le centre de la chauve-souris
-                float centerX = chauveSouris.getX() + chauveSouris.getTailleLargeur() / 2;
-                float centerY = chauveSouris.getY() + chauveSouris.getTailleLongueur() / 2;
-
-                // Dessiner le cercle concentrique autour de la chauve-souris
-                canvas.drawCircle(centerX, centerY, currentRadius, circlePaint);
-
-                for (Obstacle obstacle : obstacleManager.getObstacles()) {
-                    if (obstacle.collidesWithCircle(centerX, centerY, currentRadius)) {
-                        obstacle.setStrokeColor(Color.YELLOW); // Changer la couleur de l'obstacle en jaune
-                    }
-                }
-
-                // Augmenter le rayon actuel pour la prochaine mise à jour
-                currentRadius *= growthRate;
-
-                // Vérifier si le cercle a dépassé la taille de l'écran
-                if (currentRadius > Math.max(canvas.getWidth(), canvas.getHeight())) {
-                    // Si oui, réinitialiser le rayon pour la prochaine fois
-                    currentRadius = initialRadius;
-                }
-            } else {
-                // Si c'est le jour, réinitialiser le rayon du cercle
-                currentRadius = initialRadius;
-            }
+            nightTimeManager.drawNightMode(canvas, chauveSouris, obstacleManager);
 
             chauveSouris.draw(canvas); // Dessiner la chauve-souris
             String timeString = String.format("%02d:%02d",  minutes, seconds);
@@ -262,9 +221,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         } else if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
             float lux = event.values[0];
             if(lux < 30){
-                isNightTime = true;
+                nightTimeManager.setNightTime(true);
             }else {
-                isNightTime = false;
+                nightTimeManager.setNightTime(false);
             }
         }
     }
