@@ -273,7 +273,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
                 for (Obstacle obstacle : obstacles) {
                     if (obstacle.collidesWithCircle(centerX, centerY, currentRadius)) {
-                        obstacle.setColor(Color.YELLOW); // Changer la couleur de l'obstacle en jaune
+                        obstacle.setStrokeColor(Color.YELLOW); // Changer la couleur de l'obstacle en jaune
                     }
                 }
 

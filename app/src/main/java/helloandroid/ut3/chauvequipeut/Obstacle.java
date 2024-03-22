@@ -13,6 +13,8 @@ public class Obstacle {
     private float x, y;
     private final float width, height;
     private final boolean top;
+    private final Paint strokePaint; // Ajout d'un Paint pour le contour
+
 
     public Obstacle(Context context, float x, float y, float width, float height, boolean top) {
         this.x = x;
@@ -23,6 +25,10 @@ public class Obstacle {
 
         paint = new Paint();
         paint.setColor(Color.BLACK); // Change the color as needed
+        strokePaint = new Paint();
+        strokePaint.setStyle(Paint.Style.STROKE); // Définition du style de contour
+        strokePaint.setStrokeWidth(5); // Définition de l'épaisseur du contour
+        strokePaint.setColor(Color.BLACK);
 
         path = new Path();
         if (top) {
@@ -60,6 +66,7 @@ public class Obstacle {
         if (canvas != null) {
             // Dessiner l'obstacle
             canvas.drawPath(path, paint);
+            canvas.drawPath(path, strokePaint);
         }
     }
 
@@ -95,8 +102,8 @@ public class Obstacle {
         return cornerDistanceSquared <= Math.pow(circleRadius, 2);
     }
 
-    public void setColor(int color) {
-        paint.setColor(color);
+    public void setStrokeColor(int color) {
+        strokePaint.setColor(color);
     }
     public Path getPath() {
         return path;
