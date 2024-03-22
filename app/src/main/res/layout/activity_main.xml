@@ -21,6 +21,14 @@
         style="@style/CustomButtonStyle"/>
 
     <Button
+        android:id="@+id/scoreboardButton"
+        style="@style/CustomButtonStyle"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="ScoreBoard" />
+
+    <Button
         android:id="@+id/optionButton"
         android:layout_width="280dp"
         android:layout_height="wrap_content"

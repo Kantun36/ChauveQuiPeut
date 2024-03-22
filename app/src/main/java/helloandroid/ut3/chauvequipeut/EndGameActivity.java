@@ -11,9 +11,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class EndGameActivity extends AppCompatActivity {
 
@@ -22,6 +27,7 @@ public class EndGameActivity extends AppCompatActivity {
     private Button buttonMenu;
 
     private MediaPlayer mediaPlayer;
+    FirebaseFirestore db;
 
 
     @SuppressLint("MissingInflatedId")
@@ -83,6 +89,24 @@ public class EndGameActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        db = FirebaseFirestore.getInstance();
+
+        // Créer un objet Reservation pour stocker les détails de la réservation
+        Score reservation = new Score(score);
+
+        // Ajouter la réservation à la collection appropriée dans Firestore
+        db.collection("score")
+                .add(reservation)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                    }
+                });
     }
 
     @Override

@@ -49,6 +49,12 @@
             android:exported="true"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".ScoreboardActivity"
+            android:theme="@style/Base.Theme.ChauveQuiPeut"
+            android:exported="true"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>
