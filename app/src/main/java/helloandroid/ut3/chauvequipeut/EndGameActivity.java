@@ -45,17 +45,13 @@ public class EndGameActivity extends AppCompatActivity {
         ImageView gifImageView = findViewById(R.id.gifImageView);
         Glide.with(this).load(R.drawable.chauveperdu).into(gifImageView);
 
-
-        // Initialisation des éléments de l'interface utilisateur
         textViewScore = findViewById(R.id.textViewScore);
         buttonRestart = findViewById(R.id.buttonRestart);
         buttonMenu = findViewById(R.id.buttonMenu);
 
-        // Récupérer le score passé depuis l'activité précédente
         String score = getIntent().getStringExtra("score");
         textViewScore.setText("Temps effectué: " + score);
 
-        // Ajouter un écouteur de clic pour le bouton "Recommencer"
         buttonRestart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,7 +65,6 @@ public class EndGameActivity extends AppCompatActivity {
             }
         });
 
-        // Ajouter un écouteur de clic pour le bouton "Retour au Menu"
         buttonMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,7 +73,6 @@ public class EndGameActivity extends AppCompatActivity {
                     mediaPlayer.release();
                     mediaPlayer = null;
                 }
-                // Action à effectuer lors du clic sur le bouton "Retour au Menu"
                 Intent intent = new Intent(EndGameActivity.this, MainActivity.class);
                 startActivity(intent);
             }

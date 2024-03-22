@@ -9,6 +9,7 @@
         android:id="@+id/gifImageView"
         android:layout_width="234dp"
         android:layout_height="261dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"
         />
 
@@ -19,13 +20,15 @@
         android:text="Score: 0"
         android:textSize="24sp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp" />
-
+        android:layout_below="@id/gifImageView"
+        android:layout_marginBottom="16dp" />
 
     <Button
         android:id="@+id/buttonRestart"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
+        android:layout_below="@id/textViewScore"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"
         android:text="Recommencer"
         style="@style/CustomButtonStyle"/>
@@ -34,8 +37,11 @@
         android:id="@+id/buttonMenu"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
+        android:layout_below="@id/buttonRestart"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"
         android:text="Retour au menu"
         style="@style/CustomButtonStyle"/>
+
 
 </LinearLayout>

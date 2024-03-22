@@ -1,6 +1,8 @@
 package helloandroid.ut3.chauvequipeut;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -47,7 +49,6 @@ public class MainActivity extends Activity {
                     mediaPlayer.release();
                     mediaPlayer = null;
                 }
-                Toast.makeText(MainActivity.this, "Start button clicked", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, GameActivity.class);
                 startActivity(intent);
             }
@@ -60,7 +61,6 @@ public class MainActivity extends Activity {
                     mediaPlayer.release();
                     mediaPlayer = null;
                 }
-                Toast.makeText(MainActivity.this, "Option button clicked", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, OptionActivity.class);
                 startActivity(intent);
             }
@@ -72,6 +72,32 @@ public class MainActivity extends Activity {
                 finish();
             }
         });
+
+        Button aboutButton = findViewById(R.id.aboutButton);
+        aboutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAboutDialog();
+            }
+        });
+    }
+
+    private void showAboutDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Règles et astuces du jeu");
+        builder.setMessage("Règles et astuces du jeu : " +
+                "- Appuyez sur les touches en bas à droite de l'écran pour faire monter ou descendre la chauve-souris\n" +
+                "- Inclinez votre écran à gauche ou à droite pour déplacer la chauve-souris horizontalement \n" +
+                "- Évitez les obstacles pour ne pas être éliminé \n" +
+                "- Cachez le détecteur de lumière pour scanner les obstacles\n");
+        builder.setPositiveButton("Fermer", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -9,6 +8,7 @@
         android:id="@+id/gifImageView"
         android:layout_width="234dp"
         android:layout_height="261dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"
         />
 
@@ -16,6 +16,8 @@
         android:id="@+id/startButton"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
+        android:layout_below="@id/gifImageView"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"
         android:text="Start"
         style="@style/CustomButtonStyle"/>
@@ -24,6 +26,8 @@
         android:id="@+id/optionButton"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
+        android:layout_below="@id/startButton"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"
         android:text="Option"
         style="@style/CustomButtonStyle"/>
@@ -32,8 +36,21 @@
         android:id="@+id/quitButton"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
+        android:layout_below="@id/optionButton"
+        android:layout_centerHorizontal="true"
         android:text="Quitter"
         android:background="@android:color/black"
-        android:textColor="@android:color/white"/>
+        android:textColor="@android:color/white"
+        style="@style/CustomButtonStyle"/>
 
-</LinearLayout>
+    <Button
+        android:id="@+id/aboutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="À propos"
+        android:layout_marginBottom="16dp"
+        style="@style/CustomButtonStyle"/>
+
+</RelativeLayout>
