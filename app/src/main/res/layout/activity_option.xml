@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/gifImageView"
+        android:layout_width="234dp"
+        android:layout_height="261dp"
+        android:layout_marginBottom="16dp"
+        />
+
+    <Switch
+        android:id="@+id/switchSound"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Activer/Désactiver Sons"
+        android:layout_marginTop="16dp"/>
+
+
+    <Button
+        android:id="@+id/quitButton"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:text="Quitter"
+        android:background="@android:color/black"
+        android:textColor="@android:color/white"/>
+
+
+
+</LinearLayout>

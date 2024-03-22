@@ -3,25 +3,30 @@ package helloandroid.ut3.chauvequipeut;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
-import android.media.MediaPlayer;
-public class MainActivity extends Activity {
+
+public class OptionActivity extends Activity {
 
     private MediaPlayer mediaPlayer;
+    private Switch switchSound;
+
+    private boolean isSoundEnabled; // Garder une variable locale pour suivre l'état de la préférence des sons
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-      
-        setContentView(R.layout.activity_main);
+
+        setContentView(R.layout.activity_option);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean isSoundEnabled = preferences.getBoolean("sound_enabled", true);
@@ -33,38 +38,29 @@ public class MainActivity extends Activity {
         }
 
 
-
-        Button startButton = findViewById(R.id.startButton);
-        Button optionButton = findViewById(R.id.optionButton);
         Button quitButton = findViewById(R.id.quitButton);
+        switchSound = findViewById(R.id.switchSound);
         ImageView gifImageView = findViewById(R.id.gifImageView);
         Glide.with(this).load(R.drawable.chauvelogo).into(gifImageView);
 
-        startButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mediaPlayer != null) {
-                    mediaPlayer.release();
-                    mediaPlayer = null;
-                }
-                Toast.makeText(MainActivity.this, "Start button clicked", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, GameActivity.class);
-                startActivity(intent);
+
+
+        switchSound.setChecked(isSoundEnabled);
+
+        switchSound.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            // Enregistrer l'état de la préférence dans SharedPreferences
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("sound_enabled", isChecked);
+            editor.apply();
+
+            // Afficher un Toast pour notifier l'utilisateur que les sons sont activés ou désactivés
+            if (isChecked) {
+                Toast.makeText(OptionActivity.this, "Sons activés", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(OptionActivity.this, "Sons désactivés", Toast.LENGTH_SHORT).show();
             }
         });
 
-        optionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mediaPlayer != null) {
-                    mediaPlayer.release();
-                    mediaPlayer = null;
-                }
-                Toast.makeText(MainActivity.this, "Option button clicked", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, OptionActivity.class);
-                startActivity(intent);
-            }
-        });
 
         quitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,8 +69,6 @@ public class MainActivity extends Activity {
             }
         });
     }
-
-
 
     @Override
     protected void onDestroy() {

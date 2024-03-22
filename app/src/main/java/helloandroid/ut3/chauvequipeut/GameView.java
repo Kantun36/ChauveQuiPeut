@@ -2,6 +2,7 @@ package helloandroid.ut3.chauvequipeut;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -14,6 +15,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.MediaPlayer;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -245,6 +247,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     mediaPlayer = null;
                     Log.d("COLLISION" , "COLL");
 
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+                    boolean isSoundEnabled = preferences.getBoolean("sound_enabled", true);
                     MediaPlayer collisionSound = MediaPlayer.create(this.getContext(), R.raw.hurt);
                     collisionSound.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                         @Override
@@ -252,8 +256,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                             mp.release();
                         }
                     });
-                    collisionSound.start();
-
+                    if (isSoundEnabled) {
+                        collisionSound.start();
+                    };
                     Intent intent = new Intent(getContext(), EndGameActivity.class);
                     intent.putExtra("score", time); // Passer le score
                     getContext().startActivity(intent);

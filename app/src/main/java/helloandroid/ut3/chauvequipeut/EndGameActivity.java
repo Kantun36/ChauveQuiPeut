@@ -2,8 +2,10 @@ package helloandroid.ut3.chauvequipeut;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,15 +23,24 @@ public class EndGameActivity extends AppCompatActivity {
 
     private MediaPlayer mediaPlayer;
 
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_end_game);
 
-        mediaPlayer = MediaPlayer.create(this, R.raw.ascenseur);
-        mediaPlayer.setLooping(true);
-        mediaPlayer.start();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isSoundEnabled = preferences.getBoolean("sound_enabled", true);
+        mediaPlayer = MediaPlayer.create(this, R.raw.batman);
+        if (isSoundEnabled) {
+            mediaPlayer.setLooping(true);
+            mediaPlayer.start();
+        }
+        else {
+            mediaPlayer.setLooping(true);
+            mediaPlayer.stop();
+        }
 
         ImageView gifImageView = findViewById(R.id.gifImageView);
         Glide.with(this).load(R.drawable.chauveperdu).into(gifImageView);
@@ -49,6 +60,7 @@ public class EndGameActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (mediaPlayer != null) {
+                    mediaPlayer.stop();
                     mediaPlayer.release();
                     mediaPlayer = null;
                 }
@@ -62,6 +74,7 @@ public class EndGameActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (mediaPlayer != null) {
+                    mediaPlayer.stop();
                     mediaPlayer.release();
                     mediaPlayer = null;
                 }
@@ -76,6 +89,7 @@ public class EndGameActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (mediaPlayer != null) {
+            mediaPlayer.stop();
             mediaPlayer.release();
             mediaPlayer = null;
         }
