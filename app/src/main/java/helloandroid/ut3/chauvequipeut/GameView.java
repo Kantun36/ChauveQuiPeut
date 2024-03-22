@@ -129,8 +129,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     }
 
     public void update() {
-        // Update ChauveSouris horizontal position based on accelerometer data
-        chauveSouris.setX((int) (chauveSouris.getX() + (-accelerationX*3)));
+        // Update ChauveSouris horizontal position based on accelerometer data with boundary check
+        float newX = chauveSouris.getX() + (-accelerationX * 3);
+
+        if (newX < 0) {
+            newX = 0;
+        } else if (newX + chauveSouris.getTailleLargeur() > getWidth()) {
+            newX = getWidth() - chauveSouris.getTailleLargeur(); // Clamp to right edge
+        }
+        chauveSouris.setX((int) newX);
         // Déplacer les obstacles vers la gauche
         for (Obstacle obstacle : obstacles) {
             obstacle.moveLeft(5); // Déplacer de 5 pixels vers la gauche (ajuster selon votre besoin)
