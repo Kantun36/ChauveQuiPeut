@@ -4,17 +4,15 @@ package helloandroid.ut3.chauvequipeut;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.drawable.AnimatedImageDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.util.DisplayMetrics;
 
 public class ChauveSouris {
 
-    private AnimatedImageDrawable img = null;
+    private BitmapDrawable img = null;
     private int x, y;
-    private int TailleLongueur, TailleLargeur;
+    private int TailleLongueur, TailleLargeur; // logueur = hauteur
     private double velocity = 0.0;
 
     private final Context mContext;
@@ -39,11 +37,15 @@ public class ChauveSouris {
         resize(metrics.widthPixels, metrics.heightPixels);
     }
 
-    public AnimatedImageDrawable setImage(final Context c, final int ressource, final int w, final int h) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            return (AnimatedImageDrawable) c.getResources().getDrawable(ressource);
-        }
-        return null;
+    public BitmapDrawable setImage(final Context c, final int ressource, final int w, final int h) {
+        Drawable dr = c.getResources().getDrawable(ressource);
+        Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
+
+        float scaleX = (float) w / bitmap.getWidth();
+        float scaleY = (float) h / bitmap.getHeight();
+        float scaleFactor = Math.min(scaleX, scaleY);
+
+        return new BitmapDrawable(c.getResources(), Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() * scaleFactor), (int) (bitmap.getHeight() * scaleFactor), true));
     }
 
     public void resize(int wScreen, int hScreen) {
@@ -59,12 +61,7 @@ public class ChauveSouris {
         if (img == null) {
             return;
         }
-        // Draw the current frame of the animation
-        img.setBounds(x, y, x + TailleLargeur, y + TailleLongueur);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            img.start();
-        }
-        img.draw(canvas);
+        canvas.drawBitmap(img.getBitmap(), x, y, null);
     }
 
     public void setY(int y) {
@@ -121,19 +118,19 @@ public class ChauveSouris {
         int[][] corners = new int[4][2]; // Tableau 2D pour stocker les coordonnées de chaque coin (x, y)
 
         // Coin supérieur gauche
-        corners[0][0] = x;          // x du coin supérieur gauche
+        corners[0][0] = x + (TailleLargeur/4);          // x du coin supérieur gauche
         corners[0][1] = y;          // y du coin supérieur gauche
 
         // Coin supérieur droit
-        corners[1][0] = x + TailleLargeur;  // x du coin supérieur droit
+        corners[1][0] = x + (TailleLargeur/8);  // x du coin supérieur droit
         corners[1][1] = y;                   // y du coin supérieur droit
 
         // Coin inférieur gauche
-        corners[2][0] = x;          // x du coin inférieur gauche
+        corners[2][0] = x + (TailleLargeur/2);          // x du coin inférieur gauche
         corners[2][1] = y + TailleLongueur;  // y du coin inférieur gauche
 
         // Coin inférieur droit
-        corners[3][0] = x + TailleLargeur;  // x du coin inférieur droit
+        corners[3][0] = x + (TailleLargeur/2);  // x du coin inférieur droit
         corners[3][1] = y + TailleLongueur;  // y du coin inférieur droit
 
         return corners;

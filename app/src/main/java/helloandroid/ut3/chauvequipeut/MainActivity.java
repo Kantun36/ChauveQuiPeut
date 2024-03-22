@@ -2,7 +2,9 @@ package helloandroid.ut3.chauvequipeut;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -23,9 +25,15 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
-        mediaPlayer = MediaPlayer.create(this, R.raw.ascenseur);
-        mediaPlayer.setLooping(true);
-        mediaPlayer.start();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isSoundEnabled = preferences.getBoolean("sound_enabled", true);
+
+        if (isSoundEnabled) {
+            mediaPlayer = MediaPlayer.create(this, R.raw.ascenseur);
+            mediaPlayer.setLooping(true);
+            mediaPlayer.start();
+        }
+
 
 
         Button startButton = findViewById(R.id.startButton);
@@ -56,7 +64,7 @@ public class MainActivity extends Activity {
                     mediaPlayer = null;
                 }
                 Toast.makeText(MainActivity.this, "Option button clicked", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, EndGameActivity.class);
+                Intent intent = new Intent(MainActivity.this, OptionActivity.class);
                 startActivity(intent);
             }
         });
@@ -81,6 +89,8 @@ public class MainActivity extends Activity {
             }
         });
     }
+
+
 
     @Override
     protected void onDestroy() {

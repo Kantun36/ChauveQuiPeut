@@ -2,6 +2,7 @@ package helloandroid.ut3.chauvequipeut;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -14,8 +15,12 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.MediaPlayer;
+
+import android.preference.PreferenceManager;
+
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+
 import android.util.Log;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -29,8 +34,6 @@ import java.util.List;
 import java.util.Set;
 import android.view.View;
 import android.media.MediaPlayer;
-
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener, View.OnTouchListener {
     private final GameThread thread;
@@ -68,7 +71,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private boolean stopped = false;
 
     private String time;
-    FirebaseFirestore db;
 
 
     public GameView(Context context, MediaPlayer mediaPlayer) {
@@ -99,11 +101,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         accelerationX = 0.0f;
         isNightTime = false;
 
-        // Load arrow images
-        upArrowBitmap = BitmapFactory.decodeResource(getResources(), android.R.drawable.arrow_up_float);
-        downArrowBitmap = BitmapFactory.decodeResource(getResources(), android.R.drawable.arrow_down_float);
-        upArrowBitmap = Bitmap.createScaledBitmap(upArrowBitmap, (int)(upArrowBitmap.getWidth() * ARROW_SCALE_FACTOR), (int)(upArrowBitmap.getHeight() * ARROW_SCALE_FACTOR), true);
-        downArrowBitmap = Bitmap.createScaledBitmap(downArrowBitmap, (int)(downArrowBitmap.getWidth() * ARROW_SCALE_FACTOR), (int)(downArrowBitmap.getHeight() * ARROW_SCALE_FACTOR), true);
+        // Charger les images des flèches
+        upArrowBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.uparrow);
+        downArrowBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.downarrow);
+
+// Redimensionner les images avec un facteur d'échelle
+        float scaleFactor = 0.2f; // Facteur d'échelle pour réduire la taille à la moitié
+        upArrowBitmap = Bitmap.createScaledBitmap(upArrowBitmap, (int)(upArrowBitmap.getWidth() * scaleFactor), (int)(upArrowBitmap.getHeight() * scaleFactor), true);
+        downArrowBitmap = Bitmap.createScaledBitmap(downArrowBitmap, (int)(downArrowBitmap.getWidth() * scaleFactor), (int)(downArrowBitmap.getHeight() * scaleFactor), true);
+
+// Définir les zones de dessin des flèches
         upArrowRect = new Rect(0, 0, upArrowBitmap.getWidth(), upArrowBitmap.getHeight());
         downArrowRect = new Rect(0, getHeight() - downArrowBitmap.getHeight(), downArrowBitmap.getWidth(), getHeight());
 
@@ -163,7 +170,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         chauveSouris.setX((int) newX);
         // Déplacer les obstacles vers la gauche
         for (Obstacle obstacle : obstacles) {
-            obstacle.moveLeft(5); // Déplacer de 5 pixels vers la gauche (ajuster selon votre besoin)
+            obstacle.moveLeft(12);
         }
 
         // Vérifier si un nouveau obstacle doit être généré
@@ -233,16 +240,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 obstacle.draw(canvas);
                 int[][] bat = chauveSouris.getCornerCoordinates();
                 float[][] ob = obstacle.getTrianglePoints();
-                if(intersects(new PointF(bat[0][0],bat[0][1]), new PointF(bat[1][0],bat[1][1]),
+                if(intersects(new PointF(bat[0][0],bat[0][1]), new PointF(bat[1][0],bat[1][1]), // verif collision haut bat avec gauche obstacle
                         new PointF(ob[0][0],ob[0][1]), new PointF(ob[2][0],ob[2][1])) ||
 
-                        intersects(new PointF(bat[1][0],bat[1][1]), new PointF(bat[3][0],bat[3][1]),
+                        intersects(new PointF(bat[1][0],bat[1][1]), new PointF(bat[3][0],bat[3][1]),// verif collision droite bat avec gauche obstacle
                                 new PointF(ob[0][0],ob[0][1]), new PointF(ob[2][0],ob[2][1])) ||
 
-                        intersects(new PointF(bat[0][0],bat[0][1]), new PointF(bat[2][0],bat[2][1]),
+                        intersects(new PointF(bat[0][0],bat[0][1]), new PointF(bat[2][0],bat[2][1]),// verif collision gauche bat avec droite obstacle
                                 new PointF(ob[1][0],ob[1][1]), new PointF(ob[2][0],ob[2][1])) ||
 
-                        intersects(new PointF(bat[2][0],bat[2][1]), new PointF(bat[3][0],bat[3][1]),
+                        intersects(new PointF(bat[2][0],bat[2][1]), new PointF(bat[3][0],bat[3][1]),// verif collision bas bat avec droite obstacle
                                 new PointF(ob[1][0],ob[1][1]), new PointF(ob[2][0],ob[2][1]))
                 ){
                     mediaPlayer.stop();
@@ -255,6 +262,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     }
                     Log.d("COLLISION" , "COLL");
 
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+                    boolean isSoundEnabled = preferences.getBoolean("sound_enabled", true);
                     MediaPlayer collisionSound = MediaPlayer.create(this.getContext(), R.raw.hurt);
                     collisionSound.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                         @Override
@@ -262,10 +271,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                             mp.release();
                         }
                     });
-                    collisionSound.start();
-                    Score score = new Score("name",time );
 
-                    db.collection("score").add(score);
+                    if (isSoundEnabled) {
+                        collisionSound.start();
+                    };
 
                     Intent intent = new Intent(getContext(), EndGameActivity.class);
                     intent.putExtra("score", time); // Passer le score
@@ -473,7 +482,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     startMoveTimer(false);
                 }
             }
-        }, 20);
+        }, 10);
     }
 
     private void stopMoveTimer() {
