@@ -40,8 +40,8 @@ public class ScoreboardActivity extends Activity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         scoreData(new ScoreCallback() {
             @Override
-            public void onCallback(List<Score> restaurants) {
-                ScoreAdapter adapter = new ScoreAdapter(ScoreboardActivity.this, restaurants);
+            public void onCallback(List<Score> scores) {
+                ScoreAdapter adapter = new ScoreAdapter(ScoreboardActivity.this, scores);
                 recyclerView.setAdapter(adapter);
             }
         });
@@ -66,5 +66,6 @@ public class ScoreboardActivity extends Activity {
                 .addOnFailureListener(e -> {
                     Log.w("ScoreboardActivity", "Erreur lors de la récupération des données", e);
                 });
+
     }
 }
