@@ -4,14 +4,14 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-class GameView extends SurfaceView implements SurfaceHolder.Callback {
+public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private final GameThread thread;
-    private int ballX, ballY;
-    private int speedX, speedY;
+    private ChauveSouris chauveSouris;
     private boolean touched;
 
     public GameView(Context context) {
@@ -20,13 +20,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
         setFocusable(true);
         thread = new GameThread(getHolder(), this);
 
-        // Initialize ball position at the center of the screen
-        ballX = getWidth() / 2;
-        ballY = getHeight() / 2;
-
-        // Initialize ball speed
-        speedX = 5;
-        speedY = 5;
+        // Initialize ChauveSouris object
+        chauveSouris = new ChauveSouris(context);
 
         touched = false;
     }
@@ -58,26 +53,14 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            // Change the direction of the ball and increase its speed when touched
-            speedX *= -1;
-            speedY *= -1;
             touched = true;
         }
         return true;
     }
 
     public void update() {
-        // Move the ball
-        ballX += speedX;
-        ballY += speedY;
-
-        // Reverse direction if the ball reaches the edge of the screen
-        if (ballX <= 0 || ballX >= getWidth()) {
-            speedX *= -1;
-        }
-        if (ballY <= 0 || ballY >= getHeight()) {
-            speedY *= -1;
-        }
+        // Move the ChauveSouris object
+        chauveSouris.update();
     }
 
     @Override
@@ -85,9 +68,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
         if (canvas != null) {
             canvas.drawColor(Color.WHITE);
-            Paint paint = new Paint();
-            paint.setColor(Color.rgb(250, 0, 0));
-            canvas.drawCircle(ballX, ballY, 50, paint); // Draw the ball at the current position
+            chauveSouris.draw(canvas); // Draw the ChauveSouris object
         }
     }
 }
