@@ -38,8 +38,10 @@ import android.media.MediaPlayer;
 public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener, View.OnTouchListener {
 
     private ObstacleManager obstacleManager;
+    private MediaPlayerManager mediaPlayerManager;
+
+    private VibrationManager vibrationManager;
     private final GameThread thread;
-    private MediaPlayer mediaPlayer;
     private final Random random;
     private Bitmap background;
     private Bitmap scaled;
@@ -75,8 +77,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     public GameView(Context context, MediaPlayer mediaPlayer) {
         super(context);
-
-        this.mediaPlayer = mediaPlayer;
+        mediaPlayerManager = new MediaPlayerManager(mediaPlayer);
         getHolder().addCallback(this);
         setFocusable(true);
         setOnTouchListener(this); // Set onTouchListener for handling button clicks
@@ -93,6 +94,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        vibrationManager = new VibrationManager((Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE));
 
         // Initialize ChauveSouris object
         chauveSouris = new ChauveSouris(context);
@@ -191,36 +193,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 int[][] bat = chauveSouris.getCornerCoordinates();
                 float[][] ob = obstacle.getTrianglePoints();
                 if(CollisionManager.checkForCollision(bat, ob)){
-                    mediaPlayer.stop();
-                    mediaPlayer.release();
-                    mediaPlayer = null;
+                    mediaPlayerManager.resetMediaPlayer();
                     // Faire vibrer le téléphone
-                    Vibrator vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
-                    if (vibrator != null) {
-                        vibrator.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
-                    }
 
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getContext());
-                    boolean isSoundEnabled = preferences.getBoolean("sound_enabled", true);
-                    MediaPlayer collisionSound = MediaPlayer.create(this.getContext(), R.raw.hurt);
-                    collisionSound.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mp) {
-                            mp.release();
-                        }
-                    });
+                    vibrationManager.vibrate();
 
-                    if (isSoundEnabled) {
-                        collisionSound.start();
-                    };
+                    mediaPlayerManager.playMediaPlayer(getContext());
 
                     Intent intent = new Intent(getContext(), EndGameActivity.class);
                     intent.putExtra("score", time); // Passer le score
                     getContext().startActivity(intent);
-
-                    mediaPlayer.stop();
-                    mediaPlayer.release();
-                    mediaPlayer = null;
+                    mediaPlayerManager.resetMediaPlayer();
                     break;
                 }
             }            
