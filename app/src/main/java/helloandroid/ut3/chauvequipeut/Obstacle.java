@@ -13,6 +13,8 @@ public class Obstacle {
     private float x, y;
     private final float width, height;
     private final boolean top;
+    private final Paint strokePaint; // Ajout d'un Paint pour le contour
+
 
     public Obstacle(Context context, float x, float y, float width, float height, boolean top) {
         this.x = x;
@@ -23,6 +25,10 @@ public class Obstacle {
 
         paint = new Paint();
         paint.setColor(Color.BLACK); // Change the color as needed
+        strokePaint = new Paint();
+        strokePaint.setStyle(Paint.Style.STROKE); // Définition du style de contour
+        strokePaint.setStrokeWidth(5); // Définition de l'épaisseur du contour
+        strokePaint.setColor(Color.BLACK);
 
         path = new Path();
         if (top) {
@@ -60,6 +66,7 @@ public class Obstacle {
         if (canvas != null) {
             // Dessiner l'obstacle
             canvas.drawPath(path, paint);
+            canvas.drawPath(path, strokePaint);
         }
     }
 
@@ -75,6 +82,29 @@ public class Obstacle {
         return width;
     }
 
+    public boolean collidesWithCircle(float circleX, float circleY, float circleRadius) {
+        // Calculer la distance entre le centre du cercle et le coin inférieur gauche de l'obstacle
+        float distanceX = Math.abs(circleX - (x + width / 2));
+        float distanceY = Math.abs(circleY - (y + height / 2));
+
+        // Si la distance est inférieure au rayon du cercle, il y a collision
+        if (distanceX > (width / 2 + circleRadius) || distanceY > (height / 2 + circleRadius)) {
+            return false;
+        }
+
+        // Si la distance est inférieure à la somme des rayons, il y a collision
+        if (distanceX <= (width / 2) || distanceY <= (height / 2)) {
+            return true;
+        }
+
+        // Vérifier si la collision se produit sur les coins de l'obstacle
+        double cornerDistanceSquared = Math.pow(distanceX - width / 2, 2) + Math.pow(distanceY - height / 2, 2);
+        return cornerDistanceSquared <= Math.pow(circleRadius, 2);
+    }
+
+    public void setStrokeColor(int color) {
+        strokePaint.setColor(color);
+    }
     public Path getPath() {
         return path;
     }
