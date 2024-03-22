@@ -24,11 +24,11 @@ public class Obstacle {
         this.top = top;
 
         paint = new Paint();
-        paint.setColor(Color.BLACK); // Change the color as needed
+        paint.setColor(Color.argb(40, 0, 0, 0)); // Change la couleur en noir semi-transparent
         strokePaint = new Paint();
         strokePaint.setStyle(Paint.Style.STROKE); // Définition du style de contour
         strokePaint.setStrokeWidth(5); // Définition de l'épaisseur du contour
-        strokePaint.setColor(Color.BLACK);
+        strokePaint.setColor(Color.argb(40, 0, 0, 0)); // Change la couleur en noir semi-transparent
 
         path = new Path();
         if (top) {

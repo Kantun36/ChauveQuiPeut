@@ -91,6 +91,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         chauveSouris = new ChauveSouris(context);
 
         accelerationX = 0.0f;
+        nightTimeManager = new NightTimeManager(context);
         nightTimeManager.setNightTime(false);
 
         // Charger les images des flèches

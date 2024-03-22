@@ -51,18 +51,18 @@ public class ObstacleManager {
             if (top && !isOverlapping(topXPositions, randomX, obstacleWidth)) {
                 // Si le triangle du haut et du bas se chevauchent en termes de position x, réduire la hauteur
                 if (bottomXPositions.contains(randomX)) {
-                    obstacleHeight = (int) (viewHeight * heightFactor * random.nextFloat() * 0.5); // Hauteur réduite
+                    obstacleHeight = (int) (viewHeight * heightFactor * random.nextFloat() * 0.5) /2; // Hauteur réduite
                 } else {
-                    obstacleHeight = (int) (viewHeight * heightFactor * random.nextFloat());
+                    obstacleHeight = (int) (viewHeight * heightFactor * random.nextFloat()) / 2;
                 }
                 obstacles.add(new Obstacle(context, randomX, 0, obstacleWidth, obstacleHeight, true));
                 topXPositions.add(randomX);
             } else if (!top && !isOverlapping(bottomXPositions, randomX, obstacleWidth)) {
                 // Si le triangle du haut et du bas se chevauchent en termes de position x, réduire la hauteur
                 if (topXPositions.contains(randomX)) {
-                    obstacleHeight = (int) (viewHeight * heightFactor * random.nextFloat() * 0.5); // Hauteur réduite
+                    obstacleHeight = (int) (viewHeight * heightFactor * random.nextFloat() * 0.5)/2; // Hauteur réduite
                 } else {
-                    obstacleHeight = (int) (viewHeight * heightFactor * random.nextFloat());
+                    obstacleHeight = (int) (viewHeight * heightFactor * random.nextFloat())/2;
                 }
                 obstacles.add(new Obstacle(context, randomX, viewHeight- obstacleHeight, obstacleWidth, obstacleHeight, false));
                 bottomXPositions.add(randomX);
