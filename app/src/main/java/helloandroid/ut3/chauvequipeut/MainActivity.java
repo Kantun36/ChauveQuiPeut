@@ -48,7 +48,13 @@ public class MainActivity extends Activity {
         optionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (mediaPlayer != null) {
+                    mediaPlayer.release();
+                    mediaPlayer = null;
+                }
                 Toast.makeText(MainActivity.this, "Option button clicked", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, EndGameActivity.class);
+                startActivity(intent);
             }
         });
 
