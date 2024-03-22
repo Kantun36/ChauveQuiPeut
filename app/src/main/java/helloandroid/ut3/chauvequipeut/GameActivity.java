@@ -25,8 +25,6 @@ public class GameActivity extends Activity {
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
 
-
-
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         // Passer le lecteur de musique à GameView
