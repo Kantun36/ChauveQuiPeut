@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -44,6 +46,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private boolean moveUpPressed = false;
     private boolean moveDownPressed = false;
     private ChauveSouris chauveSouris;
+    // Ajouter un membre pour le rayon initial du cercle
+    private float initialRadius;
+    // Ajouter un membre pour le taux d'augmentation du rayon
+    private float growthRate;
+    // Ajouter un membre pour le rayon actuel du cercle
+    private float currentRadius;
+
 
     public GameView(Context context) {
         super(context);
@@ -76,6 +85,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         downArrowRect = new Rect(0, getHeight() - downArrowBitmap.getHeight(), downArrowBitmap.getWidth(), getHeight());
 
         background = BitmapFactory.decodeResource(getResources(),R.drawable.cavebackground);
+
+        initialRadius = chauveSouris.getTailleLongueur();
+        // Initialiser le taux d'augmentation du rayon
+        growthRate = 1.1f;
+        // Initialiser le rayon actuel
+        currentRadius = initialRadius;
     }
 
     @Override
@@ -131,6 +146,36 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             // Draw arrow buttons
             canvas.drawBitmap(upArrowBitmap, null, upArrowRect, null);
             canvas.drawBitmap(downArrowBitmap, null, downArrowRect, null);
+
+            Log.d("NIGHT" , "" + isNightTime);
+            // Dessiner le cercle supplémentaire lorsque c'est la nuit
+            if (isNightTime) {
+                Paint circlePaint = new Paint();
+                circlePaint.setColor(Color.YELLOW); // Couleur du cercle
+                circlePaint.setStyle(Paint.Style.STROKE);
+                circlePaint.setStrokeWidth(5);
+
+                // Calculer le centre de la chauve-souris
+                float centerX = chauveSouris.getX() + chauveSouris.getTailleLargeur() / 2;
+                float centerY = chauveSouris.getY() + chauveSouris.getTailleLongueur() / 2;
+
+                // Dessiner le cercle concentrique autour de la chauve-souris
+                canvas.drawCircle(centerX, centerY, currentRadius, circlePaint);
+
+                // Augmenter le rayon actuel pour la prochaine mise à jour
+                currentRadius *= growthRate;
+
+                // Vérifier si le cercle a dépassé la taille de l'écran
+                if (currentRadius > Math.max(canvas.getWidth(), canvas.getHeight())) {
+                    // Si oui, réinitialiser le rayon pour la prochaine fois
+                    currentRadius = initialRadius;
+                }
+            } else {
+                // Si c'est le jour, réinitialiser le rayon du cercle
+                currentRadius = initialRadius;
+            }
+
+            chauveSouris.draw(canvas); // Dessiner la chauve-souris
         }
     }
 
@@ -201,6 +246,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             Log.d("LUMI", "LUMI : "+ lux);
             if(lux < 30){
                 isNightTime = true;
+            }else {
+                isNightTime = false;
             }
         }
     }

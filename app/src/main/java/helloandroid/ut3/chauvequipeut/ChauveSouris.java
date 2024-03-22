@@ -90,6 +90,9 @@ public class ChauveSouris {
     public int getTailleLongueur() {
         return TailleLongueur;
     }
+    public int getTailleLargeur() {
+        return TailleLargeur;
+    }
 
     public void moveUp() {
         y -= 20;
