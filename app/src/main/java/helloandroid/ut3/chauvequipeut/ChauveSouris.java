@@ -91,4 +91,23 @@ public class ChauveSouris {
         return TailleLongueur;
     }
 
+    public void moveUp() {
+        y -= 20;
+        if (y < 0) {
+            y = 0;
+        }
+    }
+
+    // Method to move the bat down
+    public void moveDown() {
+        y += 20;
+        if (y + TailleLongueur > tailleEcranY) {
+            y = tailleEcranY - TailleLongueur;
+        }
+    }
+
+    // Method to reset bat movement
+    public void resetMovement() {
+    }
+
 }
