@@ -37,7 +37,6 @@ public class GameActivity extends Activity {
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        // Passer le lecteur de musique à GameView
         GameView gameView = new GameView(this, mediaPlayer);
         setContentView(gameView);
 

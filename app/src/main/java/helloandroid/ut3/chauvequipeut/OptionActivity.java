@@ -19,7 +19,6 @@ public class OptionActivity extends Activity {
     private MediaPlayer mediaPlayer;
     private Switch switchSound;
 
-    private boolean isSoundEnabled; // Garder une variable locale pour suivre l'état de la préférence des sons
 
 
     @Override
@@ -53,12 +52,6 @@ public class OptionActivity extends Activity {
             editor.putBoolean("sound_enabled", isChecked);
             editor.apply();
 
-            // Afficher un Toast pour notifier l'utilisateur que les sons sont activés ou désactivés
-            if (isChecked) {
-                Toast.makeText(OptionActivity.this, "Sons activés", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(OptionActivity.this, "Sons désactivés", Toast.LENGTH_SHORT).show();
-            }
         });
 
 
