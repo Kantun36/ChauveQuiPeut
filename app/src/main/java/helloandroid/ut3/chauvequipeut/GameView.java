@@ -8,6 +8,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -19,6 +20,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private float accelerationX;
     private SensorManager sensorManager;
     private Sensor accelerometer;
+    private Sensor lightSensor;
+    private boolean isNightTime = false;
 
     public GameView(Context context) {
         super(context);
@@ -29,12 +32,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         // Initialize accelerometer
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
 
         // Initialize ChauveSouris object
         chauveSouris = new ChauveSouris(context);
 
         touched = false;
         accelerationX = 0.0f;
+        isNightTime = false;
     }
 
     @Override
@@ -43,6 +48,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         thread.start();
         // Register accelerometer listener
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+
     }
 
     @Override
@@ -96,6 +103,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             // Update accelerationX based on accelerometer data
             accelerationX = event.values[0];
+        } else if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
+            float lux = event.values[0];
+            Log.d("LUMI", "LUMI : "+ lux);
+            if(lux < 30){
+                isNightTime = true;
+            }
         }
     }
 
