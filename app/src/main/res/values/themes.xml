@@ -3,7 +3,7 @@
     <style name="Base.Theme.ChauveQuiPeut" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-        <item name="android:windowBackground">@drawable/cavebackground</item>
+        <item name="android:windowBackground">#EDA152</item>
         <!-- Primary brand color. -->
         <item name="colorPrimary">#FF000000</item>
         <item name="colorPrimaryVariant">#FF000000</item>
