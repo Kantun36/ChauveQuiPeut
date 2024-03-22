@@ -76,7 +76,6 @@ public class MainActivity extends Activity {
                     mediaPlayer.release();
                     mediaPlayer = null;
                 }
-                Toast.makeText(MainActivity.this, "Option button clicked", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, ScoreboardActivity.class);
                 startActivity(intent);
             }
