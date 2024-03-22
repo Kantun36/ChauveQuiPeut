@@ -100,7 +100,7 @@ public class MainActivity extends Activity {
     private void showAboutDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Règles et astuces du jeu");
-        builder.setMessage("Règles et astuces du jeu : " +
+        builder.setMessage(
                 "- Appuyez sur les touches en bas à droite de l'écran pour faire monter ou descendre la chauve-souris\n" +
                 "- Inclinez votre écran à gauche ou à droite pour déplacer la chauve-souris horizontalement \n" +
                 "- Évitez les obstacles pour ne pas être éliminé \n" +
