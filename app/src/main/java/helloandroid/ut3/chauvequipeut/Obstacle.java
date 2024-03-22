@@ -69,4 +69,28 @@ public class Obstacle {
     public float getWidth() {
         return width;
     }
+
+    public boolean collidesWithCircle(float circleX, float circleY, float circleRadius) {
+        // Calculer la distance entre le centre du cercle et le coin inférieur gauche de l'obstacle
+        float distanceX = Math.abs(circleX - (x + width / 2));
+        float distanceY = Math.abs(circleY - (y + height / 2));
+
+        // Si la distance est inférieure au rayon du cercle, il y a collision
+        if (distanceX > (width / 2 + circleRadius) || distanceY > (height / 2 + circleRadius)) {
+            return false;
+        }
+
+        // Si la distance est inférieure à la somme des rayons, il y a collision
+        if (distanceX <= (width / 2) || distanceY <= (height / 2)) {
+            return true;
+        }
+
+        // Vérifier si la collision se produit sur les coins de l'obstacle
+        double cornerDistanceSquared = Math.pow(distanceX - width / 2, 2) + Math.pow(distanceY - height / 2, 2);
+        return cornerDistanceSquared <= Math.pow(circleRadius, 2);
+    }
+
+    public void setColor(int color) {
+        paint.setColor(color);
+    }
 }
