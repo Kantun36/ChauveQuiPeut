@@ -1,16 +1,19 @@
 package helloandroid.ut3.chauvequipeut;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.util.Log;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -23,10 +26,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import android.view.View;
-
+import android.media.MediaPlayer;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener, View.OnTouchListener {
     private final GameThread thread;
+    private MediaPlayer mediaPlayer;
     private List<Obstacle> obstacles;
     private final Random random;
     private Bitmap background;
@@ -53,9 +57,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     // Ajouter un membre pour le rayon actuel du cercle
     private float currentRadius;
 
+    private Paint textPaint;
+    private long startTimeMillis;
+    private long elapsedTimeMillis;
 
-    public GameView(Context context) {
+    private boolean stopped = false;
+
+    private String time;
+
+
+    public GameView(Context context, MediaPlayer mediaPlayer) {
         super(context);
+        this.mediaPlayer = mediaPlayer;
         getHolder().addCallback(this);
         setFocusable(true);
         setOnTouchListener(this); // Set onTouchListener for handling button clicks
@@ -63,6 +76,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         obstacles = new ArrayList<>();
         touched = false;
         random = new Random();
+
+        textPaint = new Paint();
+        textPaint.setColor(Color.WHITE);
+        textPaint.setTextSize(50);
+        startTimeMillis = System.currentTimeMillis();
 
         // Initialize accelerometer
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
@@ -196,18 +214,49 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        if (canvas != null) {
+
+        elapsedTimeMillis = System.currentTimeMillis() - startTimeMillis;
+        int seconds = (int) (elapsedTimeMillis / 1000) % 60;
+        int minutes = (int) ((elapsedTimeMillis / (1000*60)) % 60);
+
+
+
+        if (canvas != null && !stopped) {
             canvas.drawBitmap(scaled,-200,0,null);
             // Draw the obstacles
             for (Obstacle obstacle : obstacles) {
                 obstacle.draw(canvas);
+                int[][] bat = chauveSouris.getCornerCoordinates();
+                float[][] ob = obstacle.getTrianglePoints();
+                if(intersects(new PointF(bat[0][0],bat[0][1]), new PointF(bat[1][0],bat[1][1]),
+                        new PointF(ob[0][0],ob[0][1]), new PointF(ob[2][0],ob[2][1])) ||
+
+                        intersects(new PointF(bat[1][0],bat[1][1]), new PointF(bat[3][0],bat[3][1]),
+                                new PointF(ob[0][0],ob[0][1]), new PointF(ob[2][0],ob[2][1])) ||
+
+                        intersects(new PointF(bat[0][0],bat[0][1]), new PointF(bat[2][0],bat[2][1]),
+                                new PointF(ob[1][0],ob[1][1]), new PointF(ob[2][0],ob[2][1])) ||
+
+                        intersects(new PointF(bat[2][0],bat[2][1]), new PointF(bat[3][0],bat[3][1]),
+                                new PointF(ob[1][0],ob[1][1]), new PointF(ob[2][0],ob[2][1]))
+                ){
+                    Log.d("COLLISION" , "COLL");
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                    mediaPlayer = null;
+
+                    Intent intent = new Intent(getContext(), EndGameActivity.class);
+                    intent.putExtra("score", time); // Passer le score
+                    getContext().startActivity(intent);
+                    break;
+                    
+                }
             }            
             chauveSouris.draw(canvas);
             // Draw arrow buttons
             canvas.drawBitmap(upArrowBitmap, null, upArrowRect, null);
             canvas.drawBitmap(downArrowBitmap, null, downArrowRect, null);
 
-            Log.d("NIGHT" , "" + isNightTime);
             // Dessiner le cercle supplémentaire lorsque c'est la nuit
             if (isNightTime) {
                 Paint circlePaint = new Paint();
@@ -242,7 +291,39 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             }
 
             chauveSouris.draw(canvas); // Dessiner la chauve-souris
+            String timeString = String.format("%02d:%02d",  minutes, seconds);
+            canvas.drawText(timeString, getWidth()/2-70, 100, textPaint);
+            time = timeString;
         }
+
+    }
+
+
+
+
+    static boolean intersects(PointF a1, PointF a2, PointF b1, PointF b2) {
+        PointF intersection = new PointF();
+
+        PointF b = new PointF(a2.x - a1.x, a2.y - a1.y);
+        PointF d = new PointF(b2.x - b1.x, b2.y - b1.y);
+        float bDotDPerp = b.x * d.y - b.y * d.x;
+
+        // if b dot d == 0, it means the lines are parallel so have infinite intersection points
+        if (bDotDPerp == 0)
+            return false;
+
+        PointF c = new PointF(b1.x - a1.x, b1.y - a1.y);
+        float t = (c.x * d.y - c.y * d.x) / bDotDPerp;
+        if (t < 0 || t > 1)
+            return false;
+
+        float u = (c.x * b.y - c.y * b.x) / bDotDPerp;
+        if (u < 0 || u > 1)
+            return false;
+
+        intersection.set(a1.x + b.x * t, a1.y + b.y * t);
+
+        return true;
     }
 
     private void generateInitialObstacles() {
