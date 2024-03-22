@@ -53,6 +53,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     // Ajouter un membre pour le rayon actuel du cercle
     private float currentRadius;
 
+    private Paint textPaint;
+    private long startTimeMillis;
+    private long elapsedTimeMillis;
+
 
     public GameView(Context context) {
         super(context);
@@ -63,6 +67,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         obstacles = new ArrayList<>();
         touched = false;
         random = new Random();
+
+        textPaint = new Paint();
+        textPaint.setColor(Color.WHITE);
+        textPaint.setTextSize(50);
+        startTimeMillis = System.currentTimeMillis();
 
         // Initialize accelerometer
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
@@ -189,6 +198,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
+
+        elapsedTimeMillis = System.currentTimeMillis() - startTimeMillis;
+        int seconds = (int) (elapsedTimeMillis / 1000) % 60;
+        int minutes = (int) ((elapsedTimeMillis / (1000*60)) % 60);
+
+
+
         if (canvas != null) {
             canvas.drawBitmap(scaled,-200,0,null);
             // Draw the obstacles
@@ -229,6 +245,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             }
 
             chauveSouris.draw(canvas); // Dessiner la chauve-souris
+            String timeString = String.format("%02d:%02d",  minutes, seconds);
+            canvas.drawText(timeString, getWidth()/2-70, 100, textPaint);
         }
     }
 
