@@ -411,7 +411,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             accelerationX = event.values[0];
         } else if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
             float lux = event.values[0];
-            Log.d("LUMI", "LUMI : "+ lux);
             if(lux < 30){
                 isNightTime = true;
             }else {
