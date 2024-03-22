@@ -26,7 +26,7 @@ public class ChauveSouris {
         tailleEcranY = metrics.heightPixels;
 
         // Set the initial size of the bat (you can adjust these values)
-        TailleLongueur = (int) (metrics.heightPixels * 0.2); // Set bat height to 20% of screen height
+        TailleLongueur = (int) (metrics.heightPixels * 0.05); // Set bat height to 20% of screen height
         TailleLargeur = (int) (TailleLongueur * 793 / 446.0); // Maintain aspect ratio based on the original image size
 
         y = metrics.heightPixels / 2 - TailleLongueur / 2;
@@ -40,12 +40,10 @@ public class ChauveSouris {
         Drawable dr = c.getResources().getDrawable(ressource);
         Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
 
-        // Calculate scaling factors to maintain aspect ratio
         float scaleX = (float) w / bitmap.getWidth();
         float scaleY = (float) h / bitmap.getHeight();
         float scaleFactor = Math.min(scaleX, scaleY);
 
-        // Apply scaling factor to maintain aspect ratio
         return new BitmapDrawable(c.getResources(), Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() * scaleFactor), (int) (bitmap.getHeight() * scaleFactor), true));
     }
 
@@ -63,5 +61,29 @@ public class ChauveSouris {
             return;
         }
         canvas.drawBitmap(img.getBitmap(), x, y, null);
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public double getVelocity() {
+        return velocity;
+    }
+
+    public void setVelocity(double velocity) {
+        this.velocity = velocity;
     }
 }
