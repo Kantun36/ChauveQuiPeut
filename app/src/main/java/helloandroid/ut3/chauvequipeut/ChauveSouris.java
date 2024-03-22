@@ -20,6 +20,7 @@ public class ChauveSouris {
     private int tailleEcranX, tailleEcranY;
 
     public ChauveSouris(final Context c) {
+
         mContext = c;
         DisplayMetrics metrics = c.getResources().getDisplayMetrics();
         tailleEcranX = metrics.widthPixels;
