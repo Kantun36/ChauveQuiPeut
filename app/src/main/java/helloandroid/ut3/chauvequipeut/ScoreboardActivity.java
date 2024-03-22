@@ -1,8 +1,11 @@
 package helloandroid.ut3.chauvequipeut;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +27,15 @@ public class ScoreboardActivity extends Activity {
         RecyclerView recyclerView = findViewById(R.id.recycleReview);
         FirebaseApp.initializeApp(this);
         db = FirebaseFirestore.getInstance();
+        Button quitButton = findViewById(R.id.quitButton);
+        quitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Action à effectuer lors du clic sur le bouton "Retour au Menu"
+                Intent intent = new Intent(ScoreboardActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         scoreData(new ScoreCallback() {
@@ -43,9 +55,8 @@ public class ScoreboardActivity extends Activity {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         String scoreId = document.getId();
-                        String nom = document.getString("nom");
-                        String score = document.getString("score");
-                        scores.add(new Score(nom, score));
+                        String score = document.getString("playerScore");
+                        scores.add(new Score(score));
 
                         if (scores.size() == queryDocumentSnapshots.size()) {
                             callback.onCallback(scores);

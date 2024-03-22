@@ -31,7 +31,6 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Score item = itemList.get(position);
         holder.scoreTexte.setText(item.getPlayerScore());
-        holder.nameTexte.setText(item.getPlayerName());
 
     }
     @Override
@@ -41,12 +40,10 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView scoreTexte;
-        TextView nameTexte;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             scoreTexte = itemView.findViewById(R.id.scoreView);
-            nameTexte = itemView.findViewById(R.id.playerName);
 
         }
     }
