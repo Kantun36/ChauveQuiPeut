@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "737021115429",
+    "project_id": "jeuandroid-212bd",
+    "storage_bucket": "jeuandroid-212bd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:737021115429:android:837075a8a2a5cfbefa53cc",
+        "android_client_info": {
+          "package_name": "helloandroid.ut3.chauvequipeut"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEPXCI0uQ732ZP900tY2OuPxHVoBS1Dgs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

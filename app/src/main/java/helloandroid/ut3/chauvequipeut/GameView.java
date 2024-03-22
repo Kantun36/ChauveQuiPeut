@@ -30,6 +30,8 @@ import java.util.Set;
 import android.view.View;
 import android.media.MediaPlayer;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener, View.OnTouchListener {
     private final GameThread thread;
     private MediaPlayer mediaPlayer;
@@ -66,6 +68,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private boolean stopped = false;
 
     private String time;
+    FirebaseFirestore db;
 
 
     public GameView(Context context, MediaPlayer mediaPlayer) {
@@ -260,7 +263,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                         }
                     });
                     collisionSound.start();
+                    Score score = new Score("name",time );
 
+                    db.collection("score").add(score);
 
                     Intent intent = new Intent(getContext(), EndGameActivity.class);
                     intent.putExtra("score", time); // Passer le score
