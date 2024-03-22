@@ -131,7 +131,60 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     public void update() {
         // Update ChauveSouris horizontal position based on accelerometer data
         chauveSouris.setX((int) (chauveSouris.getX() + (-accelerationX*3)));
+        // Déplacer les obstacles vers la gauche
+        for (Obstacle obstacle : obstacles) {
+            obstacle.moveLeft(5); // Déplacer de 5 pixels vers la gauche (ajuster selon votre besoin)
+        }
+
+        // Vérifier si un nouveau obstacle doit être généré
+        if (obstacles.get(obstacles.size() - 1).getX() <= getWidth() * 0.75) {
+            generateNewObstacle();
+        }
+
     }
+    private void generateNewObstacle() {
+        int obstacleWidth = getWidth() / 4; // Largeur de chaque obstacle
+        int obstacleHeight; // Hauteur de chaque obstacle
+        int minHeight = getHeight() / 5; // Hauteur minimale
+
+        // Facteur de variation pour la hauteur des obstacles
+        float heightFactor = 0.5f; // Modifier selon vos préférences
+
+        // Variables pour suivre les positions x précédemment générées
+        Set<Float> topXPositions = new HashSet<>();
+        Set<Float> bottomXPositions = new HashSet<>();
+
+        // Générer une position x aléatoire avec un léger décalage
+        float randomX = getWidth() + random.nextInt(getWidth() / 4); // Léger décalage supplémentaire
+
+        // Déterminer si obstacle en haut ou en bas
+        boolean top = random.nextBoolean();
+
+        // Vérifier si la position x générée se chevauche avec les obstacles précédents dans la même rangée
+        if (top) {
+            if (!isOverlapping(topXPositions, randomX, obstacleWidth)) {
+                // Calculer la hauteur de l'obstacle
+                obstacleHeight = (int) (getHeight() * (heightFactor + random.nextFloat() * 0.4f));
+                // Appliquer la hauteur minimale si nécessaire
+                obstacleHeight = Math.max(obstacleHeight, minHeight);
+                obstacles.add(new Obstacle(getContext(), randomX, 0, obstacleWidth, obstacleHeight, true));
+                topXPositions.add(randomX);
+            }
+        } else {
+            if (!isOverlapping(bottomXPositions, randomX, obstacleWidth)) {
+                // Calculer la hauteur de l'obstacle
+                obstacleHeight = (int) (getHeight() * heightFactor * random.nextFloat());
+                // Appliquer la hauteur minimale si nécessaire
+                obstacleHeight = Math.max(obstacleHeight, minHeight);
+                obstacles.add(new Obstacle(getContext(), randomX, getHeight() - obstacleHeight, obstacleWidth, obstacleHeight, false));
+                bottomXPositions.add(randomX);
+            }
+        }
+    }
+
+
+
+
 
     @Override
     public void draw(Canvas canvas) {
