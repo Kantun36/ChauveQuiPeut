@@ -242,7 +242,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                         intersects(new PointF(bat[2][0],bat[2][1]), new PointF(bat[3][0],bat[3][1]),
                                 new PointF(ob[1][0],ob[1][1]), new PointF(ob[2][0],ob[2][1]))
                 ){
-                    Log.d("COLLISION" , "COLL");
                     mediaPlayer.stop();
                     mediaPlayer.release();
                     mediaPlayer = null;
@@ -251,9 +250,25 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     if (vibrator != null) {
                         vibrator.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
                     }
+                    Log.d("COLLISION" , "COLL");
+
+                    MediaPlayer collisionSound = MediaPlayer.create(this.getContext(), R.raw.hurt);
+                    collisionSound.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            mp.release();
+                        }
+                    });
+                    collisionSound.start();
+
+
                     Intent intent = new Intent(getContext(), EndGameActivity.class);
                     intent.putExtra("score", time); // Passer le score
                     getContext().startActivity(intent);
+
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                    mediaPlayer = null;
                     break;
                     
                 }
