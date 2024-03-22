@@ -27,7 +27,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private final GameThread thread;
     private List<Obstacle> obstacles;
     private final Random random;
-
     private boolean touched;
     private float accelerationX;
     private SensorManager sensorManager;
@@ -43,6 +42,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private Handler moveHandler = new Handler();
     private boolean moveUpPressed = false;
     private boolean moveDownPressed = false;
+    private ChauveSouris chauveSouris;
 
     public GameView(Context context) {
         super(context);
