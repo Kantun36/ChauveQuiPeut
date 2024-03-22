@@ -101,11 +101,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         accelerationX = 0.0f;
         isNightTime = false;
 
-        // Load arrow images
-        upArrowBitmap = BitmapFactory.decodeResource(getResources(), android.R.drawable.arrow_up_float);
-        downArrowBitmap = BitmapFactory.decodeResource(getResources(), android.R.drawable.arrow_down_float);
-        upArrowBitmap = Bitmap.createScaledBitmap(upArrowBitmap, (int)(upArrowBitmap.getWidth() * ARROW_SCALE_FACTOR), (int)(upArrowBitmap.getHeight() * ARROW_SCALE_FACTOR), true);
-        downArrowBitmap = Bitmap.createScaledBitmap(downArrowBitmap, (int)(downArrowBitmap.getWidth() * ARROW_SCALE_FACTOR), (int)(downArrowBitmap.getHeight() * ARROW_SCALE_FACTOR), true);
+        // Charger les images des flèches
+        upArrowBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.uparrow);
+        downArrowBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.downarrow);
+
+// Redimensionner les images avec un facteur d'échelle
+        float scaleFactor = 0.2f; // Facteur d'échelle pour réduire la taille à la moitié
+        upArrowBitmap = Bitmap.createScaledBitmap(upArrowBitmap, (int)(upArrowBitmap.getWidth() * scaleFactor), (int)(upArrowBitmap.getHeight() * scaleFactor), true);
+        downArrowBitmap = Bitmap.createScaledBitmap(downArrowBitmap, (int)(downArrowBitmap.getWidth() * scaleFactor), (int)(downArrowBitmap.getHeight() * scaleFactor), true);
+
+// Définir les zones de dessin des flèches
         upArrowRect = new Rect(0, 0, upArrowBitmap.getWidth(), upArrowBitmap.getHeight());
         downArrowRect = new Rect(0, getHeight() - downArrowBitmap.getHeight(), downArrowBitmap.getWidth(), getHeight());
 
