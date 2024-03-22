@@ -79,9 +79,7 @@ public class Obstacle {
         return path;
     }
 
-    public float getY() {
-        return y;
-    }
+
 
     public float getHeight() {
         return height;

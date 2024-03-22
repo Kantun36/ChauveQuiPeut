@@ -241,6 +241,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                                 new PointF(ob[1][0],ob[1][1]), new PointF(ob[2][0],ob[2][1]))
                 ){
                     Log.d("COLLISION" , "COLL");
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                    mediaPlayer = null;
+
+                    Intent intent = new Intent(getContext(), EndGameActivity.class);
+                    intent.putExtra("score", time); // Passer le score
+                    getContext().startActivity(intent);
+                    break;
                     
                 }
             }            
@@ -282,45 +290,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             time = timeString;
         }
 
-        handleCollisions();
     }
 
-    private boolean isCollision(ChauveSouris bat, Obstacle obstacle) {
-        // Calculate bounding box for bat
-        Rect batRect = new Rect(bat.getX(), bat.getY(), bat.getX() + bat.getTailleLargeur(), bat.getY() + bat.getTailleLongueur());
 
-        // Calculate bounding box for obstacle
-        Rect obstacleRect = new Rect((int) obstacle.getX(), (int) obstacle.getY(), (int) (obstacle.getX() + obstacle.getWidth()), (int) (obstacle.getY() + obstacle.getHeight()));
 
-        // Check if the bounding boxes intersect
-        return batRect.intersect(obstacleRect);
-    }
-
-    private boolean collisionOccurred = false; // Ajoutez un drapeau de collision
-
-    private void handleCollisions() {
-        if (collisionOccurred) {
-            return; // Si une collision s'est déjà produite, sortir de la méthode
-        }
-
-        for (Obstacle obstacle : obstacles) {
-            if (isCollision(chauveSouris, obstacle)) {
-                // Collision détectée, arrêter le jeu et lancer EndGameActivity
-                collisionOccurred = true; // Mettre à jour le drapeau de collision
-
-                mediaPlayer.stop();
-                mediaPlayer.release();
-                mediaPlayer = null;
-                
-                Intent intent = new Intent(getContext(), EndGameActivity.class);
-                intent.putExtra("score", time); // Passer le score
-                getContext().startActivity(intent);
-
-                // Si vous souhaitez arrêter de vérifier les autres obstacles après la première collision
-                break;
-            }
-        }
-    }
 
     static boolean intersects(PointF a1, PointF a2, PointF b1, PointF b2) {
         PointF intersection = new PointF();
