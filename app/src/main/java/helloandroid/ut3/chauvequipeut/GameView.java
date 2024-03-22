@@ -98,7 +98,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     public void update() {
         // Update ChauveSouris horizontal position based on accelerometer data
-        chauveSouris.setX((int) (chauveSouris.getX() + (-accelerationX)));
+        chauveSouris.setX((int) (chauveSouris.getX() + (-accelerationX*3)));
     }
 
     @Override
