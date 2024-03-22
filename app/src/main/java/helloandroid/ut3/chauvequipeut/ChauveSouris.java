@@ -114,4 +114,26 @@ public class ChauveSouris {
     public void resetMovement() {
     }
 
+    public int[][] getCornerCoordinates() {
+        int[][] corners = new int[4][2]; // Tableau 2D pour stocker les coordonnées de chaque coin (x, y)
+
+        // Coin supérieur gauche
+        corners[0][0] = x;          // x du coin supérieur gauche
+        corners[0][1] = y;          // y du coin supérieur gauche
+
+        // Coin supérieur droit
+        corners[1][0] = x + TailleLargeur;  // x du coin supérieur droit
+        corners[1][1] = y;                   // y du coin supérieur droit
+
+        // Coin inférieur gauche
+        corners[2][0] = x;          // x du coin inférieur gauche
+        corners[2][1] = y + TailleLongueur;  // y du coin inférieur gauche
+
+        // Coin inférieur droit
+        corners[3][0] = x + TailleLargeur;  // x du coin inférieur droit
+        corners[3][1] = y + TailleLongueur;  // y du coin inférieur droit
+
+        return corners;
+    }
+
 }
