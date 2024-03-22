@@ -24,6 +24,10 @@ import java.util.List;
 import java.util.Set;
 import android.view.View;
 
+import helloandroid.ut3.chauvequipeut.util.Point;
+import helloandroid.ut3.chauvequipeut.util.Rectangle;
+import helloandroid.ut3.chauvequipeut.util.Triangle;
+
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener, View.OnTouchListener {
     private final GameThread thread;
@@ -56,6 +60,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private Paint textPaint;
     private long startTimeMillis;
     private long elapsedTimeMillis;
+
+    private boolean stopped = false;
 
 
     public GameView(Context context) {
@@ -212,7 +218,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
 
 
-        if (canvas != null) {
+        if (canvas != null && !stopped) {
             canvas.drawBitmap(scaled,-200,0,null);
             // Draw the obstacles
             for (Obstacle obstacle : obstacles) {
@@ -223,7 +229,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             canvas.drawBitmap(upArrowBitmap, null, upArrowRect, null);
             canvas.drawBitmap(downArrowBitmap, null, downArrowRect, null);
 
-            Log.d("NIGHT" , "" + isNightTime);
             // Dessiner le cercle supplémentaire lorsque c'est la nuit
             if (isNightTime) {
                 Paint circlePaint = new Paint();
@@ -255,7 +260,29 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             String timeString = String.format("%02d:%02d",  minutes, seconds);
             canvas.drawText(timeString, getWidth()/2-70, 100, textPaint);
         }
+
+        handleCollisions();
     }
+
+    private boolean isCollision(ChauveSouris bat, Obstacle obstacle) {
+        // Calculate bounding box for bat
+        Rect batRect = new Rect(bat.getX(), bat.getY(), bat.getX() + bat.getTailleLargeur(), bat.getY() + bat.getTailleLongueur());
+
+        // Calculate bounding box for obstacle
+        Rect obstacleRect = new Rect((int) obstacle.getX(), (int) obstacle.getY(), (int) (obstacle.getX() + obstacle.getWidth()), (int) (obstacle.getY() + obstacle.getHeight()));
+
+        // Check if the bounding boxes intersect
+        return batRect.intersect(obstacleRect);
+    }
+
+    private void handleCollisions() {
+        for (Obstacle obstacle : obstacles) {
+            if (isCollision(chauveSouris, obstacle)) {
+                 Log.i("test", "touché");
+            }
+        }
+    }
+
 
     private void generateInitialObstacles() {
         int obstacleCount = 4; // Nombre d'obstacles à générer initialement

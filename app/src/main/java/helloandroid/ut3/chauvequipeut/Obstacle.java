@@ -6,6 +6,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 
+import helloandroid.ut3.chauvequipeut.util.Point;
+import helloandroid.ut3.chauvequipeut.util.Triangle;
+
 public class Obstacle {
     private final Paint paint;
     private final Path path;
@@ -34,6 +37,20 @@ public class Obstacle {
             path.lineTo(x + width, y + height);
         }
         path.close();
+    }
+
+    public Triangle generateTriangle() {
+        Point point1, point2, point3;
+        if (top) {
+            point1 = new Point((int) x, (int) y);
+            point2 = new Point((int) (x + width), (int) y);
+            point3 = new Point((int) (x + width / 2), (int) (y + height));
+        } else {
+            point1 = new Point((int) x, (int) (y + height));
+            point2 = new Point((int) (x + width / 2), (int) y);
+            point3 = new Point((int) (x + width), (int) (y + height));
+        }
+        return new Triangle(point1, point2, point3);
     }
 
     public void moveLeft(float distance) {
@@ -68,5 +85,17 @@ public class Obstacle {
 
     public float getWidth() {
         return width;
+    }
+
+    public Path getPath() {
+        return path;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public float getHeight() {
+        return height;
     }
 }
