@@ -245,6 +245,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     mediaPlayer.stop();
                     mediaPlayer.release();
                     mediaPlayer = null;
+                    // Faire vibrer le téléphone
+                    Vibrator vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+                    if (vibrator != null) {
+                        vibrator.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                    }
                     Log.d("COLLISION" , "COLL");
 
                     MediaPlayer collisionSound = MediaPlayer.create(this.getContext(), R.raw.hurt);

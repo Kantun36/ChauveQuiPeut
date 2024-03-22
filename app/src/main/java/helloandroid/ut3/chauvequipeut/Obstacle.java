@@ -109,8 +109,6 @@ public class Obstacle {
         return path;
     }
 
-
-
     public float getHeight() {
         return height;
     }
