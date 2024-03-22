@@ -14,6 +14,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.MediaPlayer;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -244,7 +246,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     mediaPlayer.stop();
                     mediaPlayer.release();
                     mediaPlayer = null;
-
+                    // Faire vibrer le téléphone
+                    Vibrator vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+                    if (vibrator != null) {
+                        vibrator.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                    }
                     Intent intent = new Intent(getContext(), EndGameActivity.class);
                     intent.putExtra("score", time); // Passer le score
                     getContext().startActivity(intent);
