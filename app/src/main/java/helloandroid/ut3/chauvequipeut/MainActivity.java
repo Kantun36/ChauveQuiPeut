@@ -10,14 +10,21 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
-
+import android.media.MediaPlayer;
 public class MainActivity extends Activity {
+
+    private MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
       
         setContentView(R.layout.activity_main);
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.ascenseur);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
+
 
         Button startButton = findViewById(R.id.startButton);
         Button optionButton = findViewById(R.id.optionButton);
@@ -28,6 +35,10 @@ public class MainActivity extends Activity {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (mediaPlayer != null) {
+                    mediaPlayer.release();
+                    mediaPlayer = null;
+                }
                 Toast.makeText(MainActivity.this, "Start button clicked", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, GameActivity.class);
                 startActivity(intent);
@@ -47,6 +58,15 @@ public class MainActivity extends Activity {
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
 }
 
